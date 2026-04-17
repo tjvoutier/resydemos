@@ -58,8 +58,9 @@ CREATE TABLE check_ins (
   week_start  DATE NOT NULL UNIQUE,  -- always a Monday
   highlights  TEXT,                  -- Tiptap JSON string
   challenges  TEXT,                  -- Tiptap JSON string
-  priorities  TEXT,                  -- Tiptap JSON string
-  shoutouts   TEXT,                  -- Tiptap JSON string
+  priorities      TEXT,              -- Tiptap JSON string
+  talking_points  TEXT,              -- Tiptap JSON string
+  shoutouts       TEXT,              -- Tiptap JSON string
   status      TEXT NOT NULL DEFAULT 'draft',  -- 'draft' | 'submitted'
   submitted_at TIMESTAMPTZ,
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -94,7 +95,8 @@ CREATE TABLE check_ins (
   1. 🏆 **Highlights & Wins**
   2. ⚡ **Challenges**
   3. 📅 **Priorities for Next Week** — header shows next week's date range (`04/21 – 04/25`)
-  4. 👏 **Shoutouts & Appreciation**
+  4. 🗣️ **Talking Points for Next 1:1**
+  5. 👏 **Shoutouts & Appreciation**
 - **Two action buttons** (bottom right):
   - `✨ Polish with AI` — secondary style, no confirmation, triggers AI rewrite in-place
   - `Send Check-In →` — primary gradient button, opens confirmation modal
@@ -155,6 +157,7 @@ CREATE TABLE check_ins (
 - Four sections: Highlights, Challenges, Priorities, Shoutouts
 - All sections rendered as bulleted lists
 - Priorities section header includes the next week's date range inline (`04/21 – 04/25`)
+- Talking Points section included between Priorities and Shoutouts
 - Footer: `Tj Voutier · Product, Resy`
 
 ---
