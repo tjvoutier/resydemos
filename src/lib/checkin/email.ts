@@ -71,7 +71,7 @@ export async function sendCheckinEmail(
 ): Promise<void> {
   const html = buildEmailHtml(checkin, nextWeekRange, weekLabel)
   await getResend().emails.send({
-    from: 'Tj Voutier <tjvoutier@gmail.com>',
+    from: 'Tj Voutier <onboarding@resend.dev>',
     to: 'isabelle.andrews@resy.com',
     cc: 'tj.voutier@resy.com',
     bcc: 'tjvoutier@gmail.com',
@@ -83,7 +83,7 @@ export async function sendCheckinEmail(
 export async function sendReminderEmail(appUrl: string, message: string): Promise<void> {
   const normalizedUrl = appUrl.replace(/\/$/, '')
   await getResend().emails.send({
-    from: 'Weekly Check-In <tjvoutier@gmail.com>',
+    from: 'Weekly Check-In <onboarding@resend.dev>',
     to: 'tjvoutier@gmail.com',
     subject: 'Weekly Check-In Reminder',
     html: `
