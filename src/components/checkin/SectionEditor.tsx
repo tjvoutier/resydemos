@@ -3,9 +3,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import BulletList from '@tiptap/extension-bullet-list'
-import ListItem from '@tiptap/extension-list-item'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props = {
   icon: string
@@ -24,9 +22,12 @@ export default function SectionEditor({
   onChange,
   readOnly = false,
 }: Props) {
+  const [editorReady, setEditorReady] = useState(false)
+
   const editor = useEditor({
-    extensions: [StarterKit, BulletList, ListItem],
+    extensions: [StarterKit],
     content: initialContent ?? '',
+    immediatelyRender: false,
     editable: !readOnly,
     editorProps: {
       attributes: {
@@ -34,6 +35,7 @@ export default function SectionEditor({
           'min-height: 80px; outline: none; padding: 12px; font-size: 14px; line-height: 1.75; color: #374151;',
       },
     },
+    onCreate() { setEditorReady(true) },
     onUpdate({ editor }) {
       onChange(editor.getHTML())
     },
@@ -84,11 +86,42 @@ export default function SectionEditor({
           </span>
         )}
       </div>
-      <div
-        style={{
-          background: readOnly ? '#fffbf7' : '#fff',
-        }}
-      >
+      {!readOnly && editorReady && editor && (
+        <div
+          style={{
+            display: 'flex',
+            gap: '4px',
+            padding: '6px 10px',
+            borderBottom: '1px solid #fde8d1',
+            background: '#fffbf7',
+          }}
+        >
+          {[
+            { label: 'B', title: 'Bold', style: { fontWeight: 800 }, action: () => editor.chain().focus().toggleBold().run(), active: editor.isActive('bold') },
+            { label: 'I', title: 'Italic', style: { fontStyle: 'italic' }, action: () => editor.chain().focus().toggleItalic().run(), active: editor.isActive('italic') },
+            { label: '•—', title: 'Bullet list', style: {}, action: () => editor.chain().focus().toggleBulletList().run(), active: editor.isActive('bulletList') },
+          ].map(({ label, title, style, action, active }) => (
+            <button
+              key={title}
+              title={title}
+              onMouseDown={(e) => { e.preventDefault(); action() }}
+              style={{
+                padding: '2px 8px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                background: active ? '#fde8d1' : 'transparent',
+                color: active ? '#e11d48' : '#6b7280',
+                ...style,
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+      <div style={{ background: readOnly ? '#fffbf7' : '#fff' }}>
         <EditorContent editor={editor} />
       </div>
     </div>

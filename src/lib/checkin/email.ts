@@ -12,8 +12,16 @@ function getResend(): Resend {
   return _resend
 }
 
+function inlineListStyles(html: string): string {
+  return html
+    .replace(/<ul>/g, '<ul style="list-style:disc;padding-left:20px;margin:8px 0">')
+    .replace(/<ol>/g, '<ol style="list-style:decimal;padding-left:20px;margin:8px 0">')
+    .replace(/<li>/g, '<li style="margin:2px 0">')
+}
+
 function section(icon: string, title: string, html: string | null, subtitle?: string): string {
   if (!html) return ''
+  html = inlineListStyles(html)
   return `
     <div style="margin-bottom:28px">
       <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #fde8d1">

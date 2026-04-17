@@ -1,4 +1,6 @@
 // src/components/checkin/SubmittedView.tsx
+'use client'
+
 import SectionEditor from './SectionEditor'
 import type { CheckIn } from '@/lib/checkin/db'
 

@@ -33,6 +33,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Tiptap editor ───────────────────────────────────────── */
+
+.tiptap ul {
+  list-style: disc !important;
+  padding-left: 20px !important;
+}
+
+.tiptap ol {
+  list-style: decimal !important;
+  padding-left: 20px !important;
+}
+
+.tiptap strong { font-weight: 700; }
+.tiptap em { font-style: italic; }
+
 /* ── Animations ──────────────────────────────────────────── */
 
 @keyframes fadeIn {
