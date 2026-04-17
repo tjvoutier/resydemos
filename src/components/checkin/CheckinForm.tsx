@@ -34,6 +34,9 @@ export default function CheckinForm({ checkin, weekLabel, nextWeekRange }: Props
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
+  const stateRef = useRef({ highlights, challenges, priorities, talkingPoints, shoutouts })
+  stateRef.current = { highlights, challenges, priorities, talkingPoints, shoutouts }
+
   const triggerSave = useCallback(
     (data: {
       highlights: string
@@ -63,12 +66,13 @@ export default function CheckinForm({ checkin, weekLabel, nextWeekRange }: Props
   ) {
     return (html: string) => {
       setter(html)
+      const s = stateRef.current
       triggerSave({
-        highlights,
-        challenges,
-        priorities,
-        talking_points: talkingPoints,
-        shoutouts,
+        highlights: s.highlights,
+        challenges: s.challenges,
+        priorities: s.priorities,
+        talking_points: s.talkingPoints,
+        shoutouts: s.shoutouts,
         [field]: html,
       })
     }

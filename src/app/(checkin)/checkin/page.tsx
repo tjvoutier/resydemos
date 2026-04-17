@@ -1,11 +1,11 @@
 // src/app/(checkin)/checkin/page.tsx
-export const dynamic = 'force-dynamic'
-
 import { getOrCreateCheckin } from '@/lib/checkin/db'
 import { getWeekStart, formatWeekRange, formatNextWeekRange, isEditable, toDateString } from '@/lib/checkin/week'
 import CheckinLayout from '@/components/checkin/CheckinLayout'
 import CheckinForm from '@/components/checkin/CheckinForm'
 import SubmittedView from '@/components/checkin/SubmittedView'
+
+export const dynamic = 'force-dynamic'
 
 export default async function CheckinPage() {
   const weekStart = getWeekStart(new Date())
