@@ -4,6 +4,8 @@ export function htmlToText(html: string | null): string {
   return html
     .replace(/<li>/gi, '- ')
     .replace(/<\/li>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<[^>]+>/g, '')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')

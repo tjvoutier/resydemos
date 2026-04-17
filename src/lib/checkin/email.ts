@@ -1,8 +1,15 @@
 import { Resend } from 'resend'
 import type { CheckIn } from './db'
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY)
+let _resend: Resend | null = null
+
+function getResend(): Resend {
+  if (!_resend) {
+    const key = process.env.RESEND_API_KEY
+    if (!key) throw new Error('RESEND_API_KEY is not set')
+    _resend = new Resend(key)
+  }
+  return _resend
 }
 
 function section(icon: string, title: string, html: string | null, subtitle?: string): string {
@@ -74,6 +81,7 @@ export async function sendCheckinEmail(
 }
 
 export async function sendReminderEmail(appUrl: string, message: string): Promise<void> {
+  const normalizedUrl = appUrl.replace(/\/$/, '')
   await getResend().emails.send({
     from: 'Weekly Check-In <tjvoutier@gmail.com>',
     to: 'tjvoutier@gmail.com',
@@ -82,7 +90,7 @@ export async function sendReminderEmail(appUrl: string, message: string): Promis
       <div style="font-family:Inter,sans-serif;max-width:480px;margin:32px auto;padding:32px;background:#fff;border-radius:16px;border:1px solid #fde8d1">
         <div style="font-size:24px;margin-bottom:16px">📝</div>
         <p style="font-size:16px;color:#111;margin-bottom:16px">${message}</p>
-        <a href="${appUrl}/checkin" style="display:inline-block;background:linear-gradient(135deg,#e11d48,#f59e0b);color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:600;font-size:14px">
+        <a href="${normalizedUrl}/checkin" style="display:inline-block;background:linear-gradient(135deg,#e11d48,#f59e0b);color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:600;font-size:14px">
           Open Check-In →
         </a>
       </div>

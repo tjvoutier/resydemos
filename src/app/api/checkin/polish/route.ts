@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { htmlToText, textToHtml } from '@/lib/checkin/htmlUtils'
 
-const client = new Anthropic()
+let _client: Anthropic | null = null
+function getAnthropic(): Anthropic {
+  if (!_client) {
+    const key = process.env.ANTHROPIC_API_KEY
+    if (!key) throw new Error('ANTHROPIC_API_KEY is not set')
+    _client = new Anthropic({ apiKey: key })
+  }
+  return _client
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
@@ -26,7 +34,7 @@ Shoutouts & Appreciation:
 ${htmlToText(shoutouts) || '(empty)'}
 `.trim()
 
-  const message = await client.messages.create({
+  const message = await getAnthropic().messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1024,
     system: `You are a professional writing assistant helping a product manager polish their weekly check-in notes.
@@ -47,9 +55,13 @@ Return ONLY the JSON — no other text.`,
     return NextResponse.json({ error: 'Unexpected response' }, { status: 500 })
   }
 
+  let rawText = content.text.trim()
+  const fenceMatch = rawText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/)
+  if (fenceMatch) rawText = fenceMatch[1]
+
   let parsed: Record<string, string>
   try {
-    parsed = JSON.parse(content.text)
+    parsed = JSON.parse(rawText)
   } catch {
     return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 500 })
   }

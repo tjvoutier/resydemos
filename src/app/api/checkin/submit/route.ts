@@ -27,6 +27,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Check-in not found' }, { status: 404 })
   }
 
+  // Guard against double-submit: already submitted, just return an image
+  if (checkin.status === 'submitted') {
+    const image = await fetchConfirmationImage()
+    return NextResponse.json({ ok: true, image })
+  }
+
   const weekLabel = `Week of ${formatWeekRange(weekStart)}`
   const nextWeekRange = formatNextWeekRange(weekStart)
   const subject = `Weekly Check-In — ${weekLabel}`
