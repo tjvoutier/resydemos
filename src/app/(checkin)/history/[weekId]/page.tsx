@@ -10,6 +10,7 @@ type Props = {
 
 export default async function HistoryDetailPage({ params }: Props) {
   const { weekId } = await params
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(weekId)) notFound()
   const checkin = await getCheckin(weekId)
 
   if (!checkin || checkin.status !== 'submitted') notFound()
