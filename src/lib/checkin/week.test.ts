@@ -4,6 +4,7 @@ import {
   formatWeekRange,
   formatNextWeekRange,
   isEditable,
+  toDateString,
 } from './week'
 
 describe('getWeekStart', () => {
@@ -30,8 +31,7 @@ describe('formatWeekRange', () => {
     const weekStart = new Date('2026-04-13')
     // Week starting Apr 13 — should produce "Apr 13–17, 2026"
     const result = formatWeekRange(weekStart)
-    expect(result).toMatch(/Apr 1[3-9]/)  // flexible on exact day
-    expect(result).toContain('2026')
+    expect(result).toBe('Apr 13–17, 2026')
   })
 })
 
@@ -61,5 +61,11 @@ describe('isEditable', () => {
     const weekStart = new Date('2026-04-13')
     const now = new Date('2026-04-20T23:00:00-04:00')
     expect(isEditable(weekStart, now)).toBe(true)
+  })
+})
+
+describe('toDateString', () => {
+  it('returns YYYY-MM-DD for a UTC midnight date', () => {
+    expect(toDateString(new Date('2026-04-13T00:00:00Z'))).toBe('2026-04-13')
   })
 })
