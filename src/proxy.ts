@@ -15,6 +15,13 @@ export function proxy(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value
   const { pathname } = request.nextUrl
 
+  // Redirect root to check-in when CHECKIN_PASSWORD is configured
+  if (pathname === '/') {
+    if (!expected) return NextResponse.next()
+    if (token === expected) return NextResponse.redirect(new URL('/checkin', request.url))
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // Redirect authenticated users away from /login
   if (pathname === '/login') {
     if (expected && token === expected) {
@@ -29,5 +36,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/login', '/checkin', '/checkin/:path*', '/history', '/history/:path*'],
+  matcher: ['/', '/login', '/checkin', '/checkin/:path*', '/history', '/history/:path*'],
 }
