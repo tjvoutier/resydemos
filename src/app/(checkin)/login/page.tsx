@@ -24,6 +24,8 @@ export default function LoginPage() {
       } else {
         setError('Incorrect password')
       }
+    } catch {
+      setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }

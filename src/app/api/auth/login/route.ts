@@ -4,20 +4,22 @@ import { createHash } from 'crypto'
 import { SESSION_COOKIE_NAME, SESSION_MAX_AGE, expectedToken } from '@/lib/checkin/auth'
 
 export async function POST(request: NextRequest) {
-  const { password } = await request.json()
-  const cookieStore = await cookies()
+  const body = await request.json()
+  const { password } = body
 
   if (!password || typeof password !== 'string') {
     return NextResponse.json({ error: 'Missing password' }, { status: 400 })
   }
 
   const submitted = createHash('sha256').update(password).digest('hex')
+  const expected = expectedToken()
 
-  if (submitted !== expectedToken()) {
+  if (submitted !== expected) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
   }
 
-  cookieStore.set(SESSION_COOKIE_NAME, expectedToken(), {
+  const cookieStore = await cookies()
+  cookieStore.set(SESSION_COOKIE_NAME, expected, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
