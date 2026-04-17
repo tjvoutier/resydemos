@@ -27,10 +27,16 @@ export async function getOrCreateCheckin(weekStart: string): Promise<CheckIn> {
   const result = await sql<CheckIn>`
     SELECT * FROM check_ins WHERE week_start = ${weekStart}
   `
-  return result.rows[0]
+  const row = result.rows[0]
+  if (!row) throw new Error(`check_in not found for week_start=${weekStart}`)
+  return row
 }
 
-// Auto-save: update one or more fields
+/**
+ * Auto-save: update one or more content fields.
+ * Pass `undefined` for a field to leave it unchanged.
+ * Pass `""` to set it to empty string.
+ */
 export async function upsertCheckin(weekStart: string, data: CheckInUpdate): Promise<void> {
   await sql`
     UPDATE check_ins
@@ -52,6 +58,7 @@ export async function submitCheckin(weekStart: string): Promise<void> {
     UPDATE check_ins
     SET status = 'submitted', submitted_at = now(), updated_at = now()
     WHERE week_start = ${weekStart}
+      AND status = 'draft'
   `
 }
 
