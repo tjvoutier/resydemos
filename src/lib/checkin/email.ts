@@ -1,7 +1,9 @@
 import { Resend } from 'resend'
 import type { CheckIn } from './db'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 function section(icon: string, title: string, html: string | null, subtitle?: string): string {
   if (!html) return ''
@@ -61,7 +63,7 @@ export async function sendCheckinEmail(
   subject: string
 ): Promise<void> {
   const html = buildEmailHtml(checkin, nextWeekRange, weekLabel)
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'Tj Voutier <tjvoutier@gmail.com>',
     to: 'isabelle.andrews@resy.com',
     cc: 'tj.voutier@resy.com',
@@ -72,7 +74,7 @@ export async function sendCheckinEmail(
 }
 
 export async function sendReminderEmail(appUrl: string, message: string): Promise<void> {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'Weekly Check-In <tjvoutier@gmail.com>',
     to: 'tjvoutier@gmail.com',
     subject: 'Weekly Check-In Reminder',
