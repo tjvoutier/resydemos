@@ -44,7 +44,7 @@ export default function SectionEditor({
     if (!editor || initialContent === null) return
     const current = editor.getHTML()
     if (current !== initialContent) {
-      editor.commands.setContent(initialContent, false)
+      editor.commands.setContent(initialContent, { emitUpdate: false })
     }
   }, [initialContent, editor])
 

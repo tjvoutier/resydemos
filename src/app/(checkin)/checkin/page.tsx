@@ -1,4 +1,6 @@
 // src/app/(checkin)/checkin/page.tsx
+export const dynamic = 'force-dynamic'
+
 import { getOrCreateCheckin } from '@/lib/checkin/db'
 import { getWeekStart, formatWeekRange, formatNextWeekRange, isEditable, toDateString } from '@/lib/checkin/week'
 import CheckinLayout from '@/components/checkin/CheckinLayout'
